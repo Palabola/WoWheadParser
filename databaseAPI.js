@@ -13,13 +13,15 @@ class DB_API {
 
     instert_creature_loot_template(array)
     {
+          if(array.length == 0)
+           return;
+
           pool.query('REPLACE INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`) VALUES ?;',
             [array], 
            function (error) {
             if (error) 
             {
-            console.log(array);
-            throw err;
+            logger.error(array);
             }
         });
     }

@@ -1,16 +1,18 @@
 const Listview = require('./Whead-Listview');
+const logger = require('./logger.js');
+
 
 let timeout_limit = 10000; // in millisec
 
 let thread_array = [];
 
-let fecth_array = [];
+let fecth_array = [253];
 
-for (let index = 0; index < 35000; index++) {
+/*for (let index = 0; index < 35000; index++) {
   
   fecth_array.push(117207+index);
 
-}
+}*/
 
 
 
@@ -48,9 +50,9 @@ function async_fecth(fecth_array,thread = 10,step = 0) {
   
         async_fecth(fecth_array,thread,step);
 
-        console.log('Update tick');
+        logger.info('Update tick');
 
-      }, 1000);
+      }, 4000);
       
   }
   
