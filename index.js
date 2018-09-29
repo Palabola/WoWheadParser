@@ -1,40 +1,59 @@
 const Listview = require('./Whead-Listview');
 
-let work_array = [];
+let timeout_limit = 10000; // in millisec
 
-let step = 0;
+let thread_array = [];
 
-let start_id = 77557;
+let fecth_array = [];
 
-function async_fecth(thread) {
+for (let index = 0; index < 35000; index++) {
+  
+  fecth_array.push(117207+index);
+
+}
+
+
+
+function async_fecth(fecth_array,thread = 10,step = 0) {
+
+      if(step > fecth_array.length)
+          return;
 
       setTimeout(() => {
          
         for(let i=0; i < thread;i++)
         {
 
-          if(work_array[i] === undefined)
+          if(thread_array[i] === undefined) // Fill the threads at startup
           {
-            work_array[i] = new Listview(start_id+step);
+            thread_array[i] = new Listview(fecth_array[step]);
             step++;
           }
           else
           {
-            if(work_array[i].state == 1)
+            if(thread_array[i].state == 1) // Re-init executed threads
             {
-              work_array[i] = new Listview(start_id+step);
+              thread_array[i] = new Listview(fecth_array[step]);
               step++;
-            } 
+            }
+           
+            if(thread_array[i].time_created + timeout_limit < Date.now())  // Cleanup timeout
+            {
+              thread_array[i] = new Listview(fecth_array[step]);
+              step++;
+            }
           }
-
-          console.log(start_id+step);
         }
 
-        async_fecth(thread);
+  
+        async_fecth(fecth_array,thread,step);
+
+        console.log('Update tick');
+
       }, 1000);
       
   }
   
 
-  async_fecth(20); // 20 Thread
+  async_fecth(fecth_array); // Y Thread count
 
