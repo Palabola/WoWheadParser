@@ -6,7 +6,7 @@ let timeout_limit = 10000; // in millisec
 
 let thread_array = [];
 
-let fecth_array = [];
+let fecth_array = [2040];
 
 /*for (let index = 0; index < 35000; index++) {
   
@@ -50,7 +50,7 @@ function async_fecth(fecth_array,thread = 10,step = 0) {
   
         async_fecth(fecth_array,thread,step);
 
-        logger.info('Update tick');
+        logger.info('Update tick'+'step = '+fecth_array[step]);
 
       }, 4000);
       

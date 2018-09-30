@@ -88,14 +88,28 @@ request.defaults(
                                 case 'drops':
                                     this.loot_query(list_data[4],total_count[1]);
                                     break;
+                                case 'pickpocketing':
+                                    this.picpocket_query(list_data[4],total_count[1]);
+                                    break;    
                                 case 'skinning':
                                     this.skinning_query(list_data[4],total_count[1]);
-                                    break;       
+                                    break;    
+                                case 'mining':
+                                    this.skinning_query(list_data[4],total_count[1]);
+                                break;    
+                                case 'herbalism':
+                                    this.skinning_query(list_data[4],total_count[1]);
+                                break;   
+                                case 'engineering':
+                                    this.skinning_query(list_data[4],total_count[1]);
+                                break;      
                                 case 'sells':
                                     this.vendor_query(list_data[4]);
-                                    break;    
+                                    break;   
+                                case 'outfit':
+                                    break;     
                                 default:
-                                logger.error('Unhandled Item List Type: '+list_data[2]);
+                                logger.error('Unhandled ItemList Type: '+list_data[2]+' at NPC: '+this.npc);
                                 return;
                             } 
                         }  
@@ -110,7 +124,7 @@ request.defaults(
                                     this.quest_query(list_data[4],'creature_questender');
                                     break;    
                                 default:
-                                logger.info('Unhandled Item List Type: '+list_data[2]);
+                                logger.info('Unhandled QuestList Type: '+list_data[2]+' at NPC: '+this.npc);
                                 return;
                             } 
                         }   
@@ -123,7 +137,7 @@ request.defaults(
                                 case 'teaches-recipe':                
                                     break;    
                                 default:
-                                logger.error('Unhandled Item List Type: '+list_data[2]);
+                                logger.error('Unhandled Spell ListType: '+list_data[2]+' at NPC: '+this.npc);
                                 return;
                             } 
                         }     
@@ -199,10 +213,44 @@ request.defaults(
         }
 
 
+        picpocket_query(json,total_count)
+        {
+            if(total_count == undefined) // Loot percentage cannot be calculated
+            return;
 
+            let loot_data = eval(json);
 
+            let loot_query = []; 
 
+            for (let i = 0; i < loot_data.length; i++) {
 
+                let chance = loot_data[i].count / Number(total_count);
+                let groupID = 0;
+
+                chance *= 100;
+                chance = Math.floor(chance * 100) /100;
+
+                if(chance < 0.25) // Under 0.5% inaccureate!
+                { 
+                        continue;
+                }  
+  
+                loot_query.push(
+                    [
+                    this.npc,
+                    loot_data[i].id, // entry
+                    0, // referrence
+                    chance, // chance
+                    0, // questReq
+                    0, // LootMode
+                    groupID, //Groupid
+                    loot_data[i].stack[0], //Min
+                    loot_data[i].stack[1] //Max
+                    ]); 
+            }
+
+            DP_API.replace_loot_template(loot_query,'pickpocketing_loot_template');
+        }
 
 
         skinning_query(json,total_count)
