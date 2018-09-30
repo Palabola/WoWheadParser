@@ -6,11 +6,11 @@ let timeout_limit = 10000; // in millisec
 
 let thread_array = [];
 
-let fecth_array = [2040];
+let fecth_array = [48];
 
-/*for (let index = 0; index < 35000; index++) {
+/*for (let index = 0; index < 155000; index++) {
   
-  fecth_array.push(117207+index);
+  fecth_array.push(index);
 
 }*/
 
@@ -19,7 +19,14 @@ let fecth_array = [2040];
 function async_fecth(fecth_array,thread = 10,step = 0) {
 
       if(step > fecth_array.length)
+      {
+          logger.info('Parse finished, exit');
           return;
+      }    
+      else
+      {
+          logger.info('Update tick'+'step = '+fecth_array[step]);
+      }
 
       setTimeout(() => {
          
@@ -47,10 +54,8 @@ function async_fecth(fecth_array,thread = 10,step = 0) {
           }
         }
 
-  
-        async_fecth(fecth_array,thread,step);
 
-        logger.info('Update tick'+'step = '+fecth_array[step]);
+        async_fecth(fecth_array,thread,step);
 
       }, 4000);
       

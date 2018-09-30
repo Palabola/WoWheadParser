@@ -12,6 +12,23 @@ const pool = mysql.createPool({
  
 class DB_API {
 
+
+    replace_creature_parse(array)
+    {
+          if(array.length == 0)
+           return;
+
+          pool.query('REPLACE INTO `creature_parse` (`entry`, `modelid1`, `name`, `femaleName`, `subname`, `minlevel`, `maxlevel`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `mingold`, `maxgold`, `VerifiedBuild`) VALUES ?;',
+            [array], 
+            (error) => {
+                            if (error) 
+                            {
+                            logger.error('Creature parse: '+array);
+                            }
+                        }
+        );
+    }
+
     replace_quest_start_end(array,table)
     {
           if(array.length == 0)
@@ -22,14 +39,11 @@ class DB_API {
             (error) => {
                             if (error) 
                             {
-                            logger.error(array);
+                            logger.error('replace_quest_start_end: '+array);
                             }
                         }
         );
     }
-
-
-
 
     replace_npc_vendor(array)
     {
@@ -41,7 +55,7 @@ class DB_API {
             (error) => {
                             if (error) 
                             {
-                            logger.error(array);
+                            logger.error('replace_npc_vendor: '+array);
                             }
                         }
         );
@@ -61,7 +75,7 @@ class DB_API {
             (error) => {
                             if (error) 
                             {
-                            logger.error(array);
+                            logger.error('replace_'+template+': '+array);
                             }
                         }
         );

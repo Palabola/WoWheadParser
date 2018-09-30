@@ -21,6 +21,12 @@ request.defaults(
         this.body = "";
         this.time_created = Date.now();
 
+        this.creature_parse= {};
+        this.creature_parse.model = 0;
+        this.creature_parse.minGold = 0;
+        this.creature_parse.maxGold = 0;
+        this.creature_parse.abilities = [0,0,0,0,0,0,0,0];
+
         if(this.npc == undefined)
         {
         this.state = 1;
@@ -49,6 +55,26 @@ request.defaults(
                         this.data_lists[i-1] = listiews[i].split(');')[0]; 
                     }   
 
+                    /* Drop money */
+                    let money_regex = /money=(.\d*)/gm; // Get _totalcount for Loot percentage
+
+                    let money_data = money_regex.exec(body);
+
+                    if(money_data)
+                    {
+                        this.creature_parse.minGold = money_data[1]*0.5;
+                        this.creature_parse.maxGold = money_data[1]*1.25;
+                    }
+
+                    /* Model Data */
+                    let model_regex = /, displayId:(.\d*)/gm; // Get _totalcount for Loot percentage
+
+                    let model_data = model_regex.exec(body);
+
+                    if(model_data)
+                    {
+                        this.creature_parse.model = model_data[1];
+                    }
 
                     this.state = 1;
 
@@ -75,8 +101,6 @@ request.defaults(
                     const regex2 = /_totalCount:(.\d*),/gm; // Get _totalcount for Loot percentage
 
                     let total_count = regex2.exec(listview);
-
-
 
                     if(list_data)
                     {
@@ -110,7 +134,6 @@ request.defaults(
                                     break;     
                                 default:
                                 logger.error('Unhandled ItemList Type: '+list_data[2]+' at NPC: '+this.npc);
-                                return;
                             } 
                         }  
 
@@ -118,14 +141,15 @@ request.defaults(
                         {
                             switch(list_data[2]) {
                                 case 'starts':
-                                  this.quest_query(list_data[4],'creature_queststarter');
+                                    this.quest_query(list_data[4],'creature_queststarter');
                                     break;
                                 case 'ends':
                                     this.quest_query(list_data[4],'creature_questender');
                                     break;    
+                                case 'objective-of':
+                                    break;     
                                 default:
                                 logger.info('Unhandled QuestList Type: '+list_data[2]+' at NPC: '+this.npc);
-                                return;
                             } 
                         }   
                         
@@ -133,12 +157,12 @@ request.defaults(
                         {
                             switch(list_data[2]) {
                                 case 'abilities':
+                                    this.parse_abilities(list_data[4]);
                                     break;
                                 case 'teaches-recipe':                
                                     break;    
                                 default:
                                 logger.error('Unhandled Spell ListType: '+list_data[2]+' at NPC: '+this.npc);
-                                return;
                             } 
                         }     
 
@@ -146,8 +170,53 @@ request.defaults(
 
                 }
 
+            
+            this.creature_parse_query();
+
+            return;
         }
 
+
+        creature_parse_query()
+        {
+
+            let query = 
+            [[
+              this.npc,//  `entry`,
+              this.creature_parse.model, //  `modelid1`,
+              '', //   `name`,
+              '', //    `femaleName`,
+              '',  //    `subname`,
+              1,  //     `minlevel`,
+              1,   //     `maxlevel`,
+                this.creature_parse.abilities[0],   //      `spell1`,
+                this.creature_parse.abilities[1],  //       `spell2`,
+                this.creature_parse.abilities[2],  //        `spell3`,
+                this.creature_parse.abilities[3],  //        `spell4`,
+                this.creature_parse.abilities[4],  //         `spell5`,
+                this.creature_parse.abilities[5],  //          `spell6`, 
+                this.creature_parse.abilities[6],  //           `spell7`,
+                this.creature_parse.abilities[7],   //           `spell8`,
+                this.creature_parse.minGold, //            `mingold`,
+                this.creature_parse.maxGold,  //            `maxgold`,
+                process.env.CURRENT_BUILD //              `VerifiedBuild`    
+            ]];
+
+            DP_API.replace_creature_parse(query);
+        }
+
+        parse_abilities(json)
+        {
+            let data = eval(json);
+
+            for (let index = 0; index < data.length; index++) {
+                
+                if(index > 7) // Max 8 Abilities for Smart Scripts
+                continue;    
+
+                this.creature_parse.abilities[index] = data[index].id;     
+            }
+        }
 
 
 
@@ -169,10 +238,6 @@ request.defaults(
 
              DP_API.replace_quest_start_end(query,table);
         }
-
-
-
-
 
 
         vendor_query(json)
@@ -338,7 +403,7 @@ request.defaults(
             DP_API.replace_loot_template(loot_query,'creature_loot_template');
         }
 
-        /*
+
         extract_modell()
         {
 
@@ -353,7 +418,7 @@ request.defaults(
 
            return; 
         }
-        */
+
 
  };
 
