@@ -1,3 +1,4 @@
+require('dotenv').config()
 const request = require('request');
 const logger = require('./logger.js');
 const DP_API = new(require('./databaseAPI'));
@@ -71,26 +72,30 @@ request.defaults(
                     let list_data = regex.exec(listview);
 
                     /* For Loot Template! */
-                    const regex2 = /_totalCount:(.*), computeDataFunc/gm; // Get _totalcount for Loot percentage
+                    const regex2 = /_totalCount:(.\d*),/gm; // Get _totalcount for Loot percentage
 
-                    this.total_count = regex2.exec(this.data_string);
+                    let total_count = regex2.exec(listview);
+
 
 
                     if(list_data)
                     {
-                    logger.info('Listview '+list_data[1]);
 
                     if(list_data[1] == 'item') // Item list
                         {
+
                             switch(list_data[2]) {
                                 case 'drops':
-                                    this.loot_query(list_data[4],this.total_count[1]);
+                                    this.loot_query(list_data[4],total_count[1]);
                                     break;
+                                case 'skinning':
+                                    this.skinning_query(list_data[4],total_count[1]);
+                                    break;       
                                 case 'sells':
-                                   // this.loot_query(list_data[4],this.total_count[1]);
+                                    this.vendor_query(list_data[4]);
                                     break;    
                                 default:
-                                logger.info('Unhandled Item List Type: '+list_data[2]);
+                                logger.error('Unhandled Item List Type: '+list_data[2]);
                                 return;
                             } 
                         }  
@@ -99,10 +104,10 @@ request.defaults(
                         {
                             switch(list_data[2]) {
                                 case 'starts':
-                                //  this.loot_query(data[4],this.total_count[1]);
+                                  this.quest_query(list_data[4],'creature_queststarter');
                                     break;
                                 case 'ends':
-                                //  this.loot_query(data[4],this.total_count[1]);
+                                    this.quest_query(list_data[4],'creature_questender');
                                     break;    
                                 default:
                                 logger.info('Unhandled Item List Type: '+list_data[2]);
@@ -114,13 +119,11 @@ request.defaults(
                         {
                             switch(list_data[2]) {
                                 case 'abilities':
-                                //  this.loot_query(data[4],this.total_count[1]);
                                     break;
-                                case 'teaches-recipe':
-                                //  this.loot_query(data[4],this.total_count[1]);
+                                case 'teaches-recipe':                
                                     break;    
                                 default:
-                                logger.info('Unhandled Item List Type: '+list_data[2]);
+                                logger.error('Unhandled Item List Type: '+list_data[2]);
                                 return;
                             } 
                         }     
@@ -131,6 +134,115 @@ request.defaults(
 
         }
 
+
+
+
+        quest_query(json,table)
+        {
+            
+            let data = eval(json);
+
+            let query = []; 
+
+            for (let i = 0; i < data.length; i++) {
+
+             query.push(
+                    [
+                     this.npc,     //  `id`
+                     data[i].id // Quest
+                    ]); 
+            }
+
+             DP_API.replace_quest_start_end(query,table);
+        }
+
+
+
+
+
+
+        vendor_query(json)
+        {
+            
+            let data = eval(json);
+
+            let query = []; 
+
+            for (let i = 0; i < data.length; i++) {
+
+                data[i].extendedcost = 0;
+
+                if(data[i].cost[0] == 0) // Extended Cost TODO: Add ItemextendedCost
+                {
+                  data[i].extendedcost = 999;
+                }
+
+                query.push(
+                    [
+                     this.npc,     //   `entry`,
+                     0,    // `slot`, 
+                     data[i].id,    // `item`,
+                     0,    //     `maxcount`,
+                     0,    //  `incrtime`,
+                     data[i].extendedcost,    //   `ExtendedCost`,
+                     1,    ///    `type`,
+                     '',     //    `BonusListIDs`,
+                     0,     //     `PlayerConditionID`,
+                     0,      //     `IgnoreFiltering`,
+                     0,      //      `OverridePrice`, 
+                     process.env.CURRENT_BUILD // `VerifiedBuild`
+                    ]); 
+            }
+
+             DP_API.replace_npc_vendor(query);
+
+        }
+
+
+
+
+
+
+
+
+        skinning_query(json,total_count)
+        {
+            if(total_count == undefined) // Loot percentage cannot be calculated
+            return;
+
+            let loot_data = eval(json);
+
+            let loot_query = []; 
+
+            for (let i = 0; i < loot_data.length; i++) {
+
+                let chance = loot_data[i].count / Number(total_count);
+                let groupID = 0;
+
+                chance *= 100;
+                chance = Math.floor(chance * 100) /100;
+
+                if(chance < 0.25 && groupID == 0) // Under 0.5% inaccureate!
+                { 
+                    continue;
+                }  
+  
+                loot_query.push(
+                    [
+                    this.npc,loot_data[i].id, // entry
+                    0, // referrence
+                    chance, // chance
+                    0, // questReq
+                    0, // LootMode
+                    groupID, //Groupid
+                    loot_data[i].stack[0], //Min
+                    loot_data[i].stack[1] //Max
+                    ]); 
+            }
+
+             DP_API.replace_loot_template(loot_query,'skinning_loot_template');
+
+        }
 
         loot_query(json,total_count)
         {
@@ -163,7 +275,8 @@ request.defaults(
   
                 loot_query.push(
                     [
-                    this.npc,loot_data[i].id, // entry
+                    this.npc,
+                    loot_data[i].id, // entry
                     0, // referrence
                     chance, // chance
                     0, // questReq
@@ -174,7 +287,7 @@ request.defaults(
                     ]); 
             }
 
-            DP_API.instert_creature_loot_template(loot_query);
+            DP_API.replace_loot_template(loot_query,'creature_loot_template');
         }
 
         /*

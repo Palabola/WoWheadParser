@@ -6,7 +6,7 @@ let timeout_limit = 10000; // in millisec
 
 let thread_array = [];
 
-let fecth_array = [253];
+let fecth_array = [];
 
 /*for (let index = 0; index < 35000; index++) {
   
