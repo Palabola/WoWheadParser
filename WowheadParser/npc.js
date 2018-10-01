@@ -88,6 +88,8 @@ class Wowhead_npc_parser {
               break;
             case "outfit":
               break;
+            case "summoned-by":
+              break;
             default:
               logger.error(
                 "Unhandled ItemList Type: " +
@@ -125,7 +127,13 @@ class Wowhead_npc_parser {
             case "abilities":
               this.parse_abilities(list_data[4]);
               break;
+            case "controlled-abilities":
+              break;
             case "teaches-recipe":
+              break;
+            case "teaches-ability":
+              break;
+            case "teaches-other":
               break;
             default:
               logger.error(
