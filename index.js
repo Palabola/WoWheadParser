@@ -1,62 +1,25 @@
-const Listview = require('./Whead-Listview');
-const logger = require('./logger.js');
+const Wowhead_npc = require("./WowheadParser/npc");
+const logger = require("./logger.js");
+const crawler = require("./Crawler/crawler");
 
+let npc_url_array = [];
+let npc_optional_array = [];
 
-let timeout_limit = 10000; // in millisec
-
-let thread_array = [];
-
-let fecth_array = [48];
-
-/*for (let index = 0; index < 155000; index++) {
-  
-  fecth_array.push(index);
-
-}*/
-
-
-
-function async_fecth(fecth_array, thread = 10, step = 0) {
-
-  if (step > fecth_array.length) {
-    logger.info('Parse finished, exit');
-    return;
-  }
-  else {
-    logger.info('Update tick' + 'step = ' + fecth_array[step]);
-  }
-
-  setTimeout(() => {
-
-    for (let i = 0; i < thread; i++) {
-
-      if (thread_array[i] === undefined) // Fill the threads at startup
-      {
-        thread_array[i] = new Listview(fecth_array[step]);
-        step++;
-      }
-      else {
-        if (thread_array[i].state == 1) // Re-init executed threads
-        {
-          thread_array[i] = new Listview(fecth_array[step]);
-          step++;
-        }
-
-        if (thread_array[i].time_created + timeout_limit < Date.now())  // Cleanup timeout
-        {
-          thread_array[i] = new Listview(fecth_array[step]);
-          step++;
-        }
-      }
-    }
-
-
-    async_fecth(fecth_array, thread, step);
-
-  }, 4000);
-
+for (let index = 0; index < 155000; index++) {
+  npc_url_array.push("https://www.wowhead.com/npc=" + index);
+  npc_optional_array.push(index);
 }
 
+let new_job = new crawler(npc_url_array, npc_optional_array, 3000, 10);
 
-async_fecth(fecth_array); // Y Thread count
-
+// Start Fetch with Callback
+new_job.start_fetch((err, res) => {
+  if (err) {
+    logger.error(err);
+  }
+  if (res) {
+    //uri , body , optional
+    new Wowhead_npc(res.optional, res.body);
+    logger.info("Update tick: " + res.optional);
+  }
+});
