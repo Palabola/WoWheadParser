@@ -7,8 +7,8 @@ let gob_url_array = [];
 let gob_optional_array = [];
 
 for (let index = 200000; index < 325000; index++) {
-  npc_url_array.push("https://www.wowhead.com/object=" + index);
-  npc_optional_array.push(index);
+  gob_url_array.push("https://www.wowhead.com/object=" + index);
+  gob_optional_array.push(index);
 }
 
 let go_crawler = new crawler(gob_url_array, gob_optional_array, 3000, 10);
