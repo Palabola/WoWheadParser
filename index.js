@@ -11,9 +11,9 @@ for (let index = 200000; index < 325000; index++) {
   gob_optional_array.push(index);
 }
 
-let go_crawler = new crawler(gob_url_array, gob_optional_array, 3000, 10);
+let gob_crawler = new crawler(gob_url_array, gob_optional_array, 2000, 10);
 
-go_crawler.start_fetch((err, res) => {
+gob_crawler.start_fetch((err, res) => {
   if (err) {
     logger.error(err);
   }

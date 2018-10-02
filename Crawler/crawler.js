@@ -8,7 +8,7 @@ request.defaults({
 });
 
 class Crawler {
-  constructor(fecth_array, optional_array, timer = 3000, thread = 10) {
+  constructor(fecth_array, optional_array, timer = 100, thread = 10) {
     this.fecth_array = fecth_array;
     if (optional_array) {
       this.optional_array = optional_array;
@@ -38,9 +38,7 @@ class Crawler {
         // Init Threads or renew them
         if (this.thread_array[i] == 1 || this.thread_array[i] === undefined) {
           // Set state for 0 until async request done avoid overwrite
-          if (this.thread_array[i] === undefined) {
-            this.thread_array[i] = 0;
-          }
+          this.thread_array[i] = 0;
 
           this.fethcing(
             this.fecth_array[this.step],
