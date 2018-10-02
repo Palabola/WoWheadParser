@@ -354,19 +354,6 @@ class Wowhead_npc_parser {
 
     DP_API.replace_loot_template(loot_query, "creature_loot_template");
   }
-
-  extract_modell() {
-    var res = this.body.split("displayId:");
-    let scripts = [];
-
-    for (let i = 1; i < res.length; i++) {
-      scripts[i - 1] = res[i].split('})">')[0];
-    }
-
-    //console.log('UPDATE creature_template SET modelid1 =', scripts[0],'where entry =', this.entry,' ;');
-
-    return;
-  }
 }
 
 module.exports = Wowhead_npc_parser;

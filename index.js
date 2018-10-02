@@ -1,7 +1,7 @@
 const Wowhead_npc = require("./WowheadParser/npc");
 const Wowhead_go = require("./WowheadParser/gameobject");
 const logger = require("./logger.js");
-const crawler = require("./Crawler/crawler");
+const crawler = require("async-request-loop");
 
 let gob_url_array = [];
 let gob_optional_array = [];
