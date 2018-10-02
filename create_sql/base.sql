@@ -42,3 +42,42 @@ CREATE TABLE `pickpocketing_loot_template` (
 ALTER TABLE `pickpocketing_loot_template`
   ADD PRIMARY KEY (`Entry`,`Item`);
 COMMIT;
+
+
+CREATE TABLE `gameobject_questender` (
+  `id` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `quest` mediumint(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quest Identifier'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `gameobject_questender`
+  ADD PRIMARY KEY (`id`,`quest`);
+COMMIT;
+
+CREATE TABLE `gameobject_queststarter` (
+  `id` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `quest` mediumint(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quest Identifier'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `gameobject_queststarter`
+  ADD PRIMARY KEY (`id`,`quest`);
+COMMIT;
+
+
+CREATE TABLE `gameobject_loot_template` (
+  `Entry` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Item` int(10) NOT NULL DEFAULT '0',
+  `Reference` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Chance` float NOT NULL DEFAULT '100',
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
+  `LootMode` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
+  `GroupId` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `MinCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `MaxCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `Comment` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Loot System';
+
+
+ALTER TABLE `gameobject_loot_template`
+  ADD PRIMARY KEY (`Entry`,`Item`),
+  ADD KEY `Item` (`Item`);
+COMMIT;

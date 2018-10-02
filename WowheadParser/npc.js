@@ -3,8 +3,8 @@ const logger = require("../logger.js");
 const DP_API = new (require("./databaseAPI"))();
 
 class Wowhead_npc_parser {
-  constructor(npc, body) {
-    this.npc = npc;
+  constructor(entry, body) {
+    this.entry = entry;
     this.body = body;
     this.data_lists = [];
 
@@ -95,7 +95,7 @@ class Wowhead_npc_parser {
                 "Unhandled ItemList Type: " +
                   list_data[2] +
                   " at NPC: " +
-                  this.npc
+                  this.entry
               );
           }
         }
@@ -116,7 +116,7 @@ class Wowhead_npc_parser {
                 "Unhandled QuestList Type: " +
                   list_data[2] +
                   " at NPC: " +
-                  this.npc
+                  this.entry
               );
           }
         }
@@ -140,7 +140,7 @@ class Wowhead_npc_parser {
                 "Unhandled Spell ListType: " +
                   list_data[2] +
                   " at NPC: " +
-                  this.npc
+                  this.entry
               );
           }
         }
@@ -155,7 +155,7 @@ class Wowhead_npc_parser {
   creature_parse_query() {
     let query = [
       [
-        this.npc, //  `entry`,
+        this.entry, //  `entry`,
         this.creature_parse.model, //  `modelid1`,
         "", //   `name`,
         "", //    `femaleName`,
@@ -198,7 +198,7 @@ class Wowhead_npc_parser {
 
     for (let i = 0; i < data.length; i++) {
       query.push([
-        this.npc, //  `id`
+        this.entry, //  `id`
         data[i].id // Quest
       ]);
     }
@@ -220,7 +220,7 @@ class Wowhead_npc_parser {
       }
 
       query.push([
-        this.npc, //   `entry`,
+        this.entry, //   `entry`,
         0, // `slot`,
         data[i].id, // `item`,
         0, //     `maxcount`,
@@ -260,7 +260,7 @@ class Wowhead_npc_parser {
       }
 
       loot_query.push([
-        this.npc,
+        this.entry,
         loot_data[i].id, // entry
         0, // referrence
         chance, // chance
@@ -297,7 +297,7 @@ class Wowhead_npc_parser {
       }
 
       loot_query.push([
-        this.npc,
+        this.entry,
         loot_data[i].id, // entry
         0, // referrence
         chance, // chance
@@ -340,7 +340,7 @@ class Wowhead_npc_parser {
       }
 
       loot_query.push([
-        this.npc,
+        this.entry,
         loot_data[i].id, // entry
         0, // referrence
         chance, // chance
@@ -363,7 +363,7 @@ class Wowhead_npc_parser {
       scripts[i - 1] = res[i].split('})">')[0];
     }
 
-    //console.log('UPDATE creature_template SET modelid1 =', scripts[0],'where entry =', this.npc,' ;');
+    //console.log('UPDATE creature_template SET modelid1 =', scripts[0],'where entry =', this.entry,' ;');
 
     return;
   }
