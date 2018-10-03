@@ -78,6 +78,20 @@ class Wowhead_item_parser {
               break;
             case "shared-cooldown":
               break;
+            case "contained-in-item":
+              break;
+            case "taught-by-item":
+              break;
+            case "same-model-as":
+              break;
+            case "prospected-from":
+              break;
+            case "milled-from":
+              break;
+            case "creates":
+              break;
+            case "currency-for":
+              break;
             default:
               logger.error(
                 "Unhandled ItemList Type: " +

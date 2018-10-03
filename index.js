@@ -16,7 +16,7 @@ let item_crawler = new crawler(item_url_array, item_optional_array, 3000, 10);
 
 item_crawler.start_fetch((err, res) => {
   if (err) {
-    logger.error(err);
+    logger.error("" + err);
   }
   if (res) {
     //uri , body , optional
