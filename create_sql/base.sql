@@ -81,3 +81,103 @@ ALTER TABLE `gameobject_loot_template`
   ADD PRIMARY KEY (`Entry`,`Item`),
   ADD KEY `Item` (`Item`);
 COMMIT;
+
+
+
+CREATE TABLE `item_loot_template` (
+  `Entry` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Item` int(10) NOT NULL DEFAULT '0',
+  `Reference` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Chance` float NOT NULL DEFAULT '100',
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
+  `LootMode` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
+  `GroupId` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `MinCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `MaxCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `Comment` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Loot System' ROW_FORMAT=FIXED;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `item_loot_template`
+--
+ALTER TABLE `item_loot_template`
+  ADD PRIMARY KEY (`Entry`,`Item`);
+COMMIT;
+
+CREATE TABLE `disenchant_loot_template` (
+  `Entry` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Item` mediumint(8) NOT NULL DEFAULT '0',
+  `Reference` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Chance` float NOT NULL DEFAULT '100',
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
+  `LootMode` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
+  `GroupId` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `MinCount` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
+  `MaxCount` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
+  `Comment` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Loot System' ROW_FORMAT=FIXED;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `disenchant_loot_template`
+--
+ALTER TABLE `disenchant_loot_template`
+  ADD PRIMARY KEY (`Entry`,`Item`);
+COMMIT;
+
+CREATE TABLE `milling_loot_template` (
+  `Entry` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Item` int(10) NOT NULL DEFAULT '0',
+  `Reference` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Chance` float NOT NULL DEFAULT '100',
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
+  `LootMode` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
+  `GroupId` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `MinCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `MaxCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `Comment` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Loot System' ROW_FORMAT=FIXED;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `milling_loot_template`
+--
+ALTER TABLE `milling_loot_template`
+  ADD PRIMARY KEY (`Entry`,`Item`);
+COMMIT;
+
+
+
+CREATE TABLE `prospecting_loot_template` (
+  `Entry` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Item` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Reference` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Chance` float NOT NULL DEFAULT '100',
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
+  `LootMode` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
+  `GroupId` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `MinCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `MaxCount` mediumint(6) UNSIGNED NOT NULL DEFAULT '1',
+  `Comment` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Loot System' ROW_FORMAT=FIXED;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `prospecting_loot_template`
+--
+ALTER TABLE `prospecting_loot_template`
+  ADD PRIMARY KEY (`Entry`,`Item`);
+COMMIT;

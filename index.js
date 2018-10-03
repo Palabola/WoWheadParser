@@ -1,8 +1,31 @@
 const Wowhead_npc = require("./WowheadParser/npc");
 const Wowhead_go = require("./WowheadParser/gameobject");
+const Wowhead_item = require("./WowheadParser/item");
 const logger = require("./logger.js");
 const crawler = require("async-request-loop");
 
+let item_url_array = [];
+let item_optional_array = [];
+
+for (let index = 764; index < 160000; index++) {
+  item_url_array.push("https://www.wowhead.com/item=" + index);
+  item_optional_array.push(index);
+}
+
+let item_crawler = new crawler(item_url_array, item_optional_array, 3000, 10);
+
+item_crawler.start_fetch((err, res) => {
+  if (err) {
+    logger.error(err);
+  }
+  if (res) {
+    //uri , body , optional
+    new Wowhead_item(res.optional, res.body);
+    logger.info("Update tick: " + res.optional);
+  }
+});
+
+/*
 let gob_url_array = [];
 let gob_optional_array = [];
 
@@ -23,6 +46,7 @@ gob_crawler.start_fetch((err, res) => {
     logger.info("Update tick: " + res.optional);
   }
 });
+*/
 
 /*
 let npc_url_array = [];

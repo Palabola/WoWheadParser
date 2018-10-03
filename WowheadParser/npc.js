@@ -52,6 +52,8 @@ class Wowhead_npc_parser {
     for (let index = 0; index < this.data_lists.length; index++) {
       let listview = this.data_lists[index];
 
+      listview = listview.replace(/(\r\n|\n|\r)/gm, " "); // Clean up from line breaks
+
       const regex = /{template: '(.*)', id: '(.*)', name: (.*) data: (.*)}/gm; // Get List Data JSONs
 
       let list_data = regex.exec(listview);
